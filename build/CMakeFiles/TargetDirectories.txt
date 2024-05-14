@@ -1,0 +1,3 @@
+/home/oms/Projects/SerialIO/build/CMakeFiles/sioTest.dir
+/home/oms/Projects/SerialIO/build/CMakeFiles/edit_cache.dir
+/home/oms/Projects/SerialIO/build/CMakeFiles/rebuild_cache.dir

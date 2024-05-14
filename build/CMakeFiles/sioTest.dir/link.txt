@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/sioTest.dir/main.cpp.o CMakeFiles/sioTest.dir/serialio.cpp.o CMakeFiles/sioTest.dir/networkmanager.cpp.o -o sioTest 
