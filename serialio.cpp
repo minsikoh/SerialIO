@@ -36,11 +36,11 @@ void CSerialIo::Initialize()
 	m_saio.sa_restorer = NULL;
 	sigaction(SIGIO, &m_saio, NULL);
 
-	// SIGIO signal À» ¹ŞÀ» ¼ö ÀÖµµ·Ï ÇÑ´Ù.
+	// SIGIO signal ì„ ë°›ì„ ìˆ˜ ìˆë„ë¡ í•œë‹¤.
 	fcntl(m_fd, F_SETOWN, getpid());
 
-	/* file descriptor¸¦ ºñµ¿±â·Î ¸¸µç´Ù. (manual page¸¦ º¸¸é
-	O_APPEND¿Í O_NONBLOCK¸¸ÀÌ F_SETFL¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Ù°í µÇ¾î ÀÖ´Ù)
+	/* file descriptorë¥¼ ë¹„ë™ê¸°ë¡œ ë§Œë“ ë‹¤. (manual pageë¥¼ ë³´ë©´
+	O_APPENDì™€ O_NONBLOCKë§Œì´ F_SETFLì— ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤ê³  ë˜ì–´ ìˆë‹¤)
 	*/
 	fcntl(m_fd, F_SETFL, FASYNC);
 
@@ -83,11 +83,11 @@ void CSerialIo::Initialize_Recv()
 	m_saio.sa_restorer = NULL;
 	sigaction(SIGIO, &m_saio, NULL);
 
-	// SIGIO signal À» ¹ŞÀ» ¼ö ÀÖµµ·Ï ÇÑ´Ù.
+	// SIGIO signal ì„ ë°›ì„ ìˆ˜ ìˆë„ë¡ í•œë‹¤.
 	fcntl(m_fd, F_SETOWN, getpid());
 
-	/* file descriptor¸¦ ºñµ¿±â·Î ¸¸µç´Ù. (manual page¸¦ º¸¸é
-	O_APPEND¿Í O_NONBLOCK¸¸ÀÌ F_SETFL¿¡ »ç¿ëÇÒ ¼ö ÀÖ´Ù°í µÇ¾î ÀÖ´Ù)
+	/* file descriptorë¥¼ ë¹„ë™ê¸°ë¡œ ë§Œë“ ë‹¤. (manual pageë¥¼ ë³´ë©´
+	O_APPENDì™€ O_NONBLOCKë§Œì´ F_SETFLì— ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤ê³  ë˜ì–´ ìˆë‹¤)
 	*/
 	fcntl(m_fd, F_SETFL, FASYNC);
 
@@ -218,20 +218,6 @@ void CSerialIo::SendThread(void* param)
 		//pClass->pCallbackFunc(pClass->m_cRecvBuff, size);
 		
 		RS422_MSG msg;
-		msg.HDR_1 = 8;
-		msg.HDR_2 = 16;
-		msg.CNT = (++cnt%255);
-		msg.AST_1 = 40;
-		msg.AST_2 = 56;
-		msg.AST_3 = 72;
-		msg.AST_4 = 88;
-		msg.UTC_DATA_1 = 104;
-		msg.UTC_DATA_2 = 120;
-		msg.UTC_DATA_3 = 136;
-		msg.UTC_DATA_4 = 152;
-		msg.UTC_DATA_5 = 168;
-		msg.TAIL = 184;
-		msg.MSG_CKS = 0;
 	
 	
 /*	
@@ -240,7 +226,6 @@ void CSerialIo::SendThread(void* param)
 		short cks = CNetworkManager::udp_checksum(pClass->m_cRecvBuff, ckSize);
 		memcpy(pClass->m_cRecvBuff+size-2, &cks, sizeof(short));
 
-		printf("S1-> HDR1(%d) HDR2(%d) CNT(%d) CKS(%d)\n", msg.HDR_1, msg.HDR_2, msg.CNT, cks);
 		
 		write(pClass->m_fd, pClass->m_cRecvBuff, size);
 */	
@@ -248,9 +233,7 @@ void CSerialIo::SendThread(void* param)
 		int ckSize = size/2 -2;
 		short cks = CNetworkManager::udp_checksum((char*)&msg, ckSize);
 		msg.MSG_CKS = cks;
-		
-		printf("S1-> HDR1(%d) HDR2(%d) CNT(%d) CKS(%d)\n", msg.HDR_1, msg.HDR_2, msg.CNT, (short)msg.MSG_CKS);
-		
+	
 		write(pClass->m_fd, &msg, 24);
 		
 	
